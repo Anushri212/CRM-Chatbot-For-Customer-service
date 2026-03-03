@@ -1,0 +1,2823 @@
+{
+  "name": "crm_bill_contract_bestoffer_planChange_orderStatus",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a customer service intent classifier. Classify the user query :{{ $('Webhook').item.json.body.chatInput }} \ninto exactly one category.\n\n**CRITICAL OUTPUT RULES**:\n\n* Output MUST be valid JSON ONLY - NO markdown code blocks, NO `json` tags, NO extra formatting\n* Output MUST be pure JSON starting with { and ending with }\n* DO NOT wrap output in code blocks or backticks\n* Example of CORRECT output: {\"intent\": \"bill_dispute\"}\n* Example of WRONG output: `json\\n{\"intent\": \"bill_dispute\"}\\n`\n\n---\n\n### CLASSIFICATION RULES:\n\n#### **1️⃣ BILL DISPUTE**\n\nIf the query mentions ANY of the following phrases or keywords, classify as **\"bill_dispute\"**:\n\n* \"i have high bill usage\"\n* \"i have billing issue\"\n* \"my bill is too high\"\n* \"i need to know bill usage\"\n* \"bill dispute\"\n* \"bill usage\"\n\n**Keywords:**\nbill | billing usage | bill related issues\n**Exclude:** \"sounds like bill summary\"\n\n---\n\n#### **2️⃣ BILL SUMMARY**\n\nIf the query mentions ANY of the following phrases or keywords, classify as **\"bill_summary\"**:\n\n* \"elaborate or يشرح\"\n* \"want to know invoice summary\"\n* \"What is the total bill synopsis for this client?\"\n* \"Could you give me the customer's bill history summary?\"\n* \"Can you please elaborate more on this bill\"\n* \"Can you please give more details on this bill\"\n* \"Can you provide a summary of the customer's billing details?\"\n* \"Requesting a quick recap of the client's bill information.\"\n* \"elaborate\"\n* \"elaborate on this invoice\"\n* \"in detail explain\"\n* \"How many active connections are being billed this month?\"\n* “Compare these two bills”\n* “What is the difference between last month’s bill and this month’s?”\n* “Show month-to-month variation in my bill”\n* “Why is my November bill higher than October?”\n* “What is my due amount and due date?\n* “Did I pay my last bill?” / “Show payment history.”\n* “What plan am I currently on?”\n* \"When was this invoice issued according to this bill?\"\n* \"How much VAT has been applied and at what rate in aug month bill?\"\n* \"What product does this invoice correspond to?\"\"\n* \"How many active connections are being billed this month?\"\n* \"What is my due amount and due date?\"\n* \"What are the late payment charges in this bill?\"\n* \"What plan am I currently on?\"\n* \"want to know the taxes in my bill.\"\n* \"Show me my itemized bill.\"\n* \"What are the components in this bill?\"\n* \"What is my due amount and due date?\"\n\n**Keywords** :\nActive Connections at start of month | Active Connections at end of month | Total Amount | Current Charges | VAT | VAT Charges | Billing Period | Invoice Date | This Month | This Period | Start of Month | End of Month | Total OMR | Amount (OMR) | Pro-rata | Carried Forward | Balance Brought Forward | Residential-Connection | Business-Connection | H&E-Connection | Riyadh-Connection | product does this invoice correspond to |  active connections | taxes | Fax number | Invoice number | Account Number | Customer ID | OBB TIN | Payment Terms | Bank | Product Code |  terminated | Bill authorised.\n\n**Also include:**\n1) Any query that sounds like requesting to provide bill summary, wanting more details, or elaboration on a bill or elaborate on invoice or elaborate or more detailed way i need explaination or explain more on this bill.\n2) Bill comparison : clearly expresses the intent to compare two or more bills, check differences between billing periods, analyze month-to-month changes, or understand why one bill differs from another. Includes any request to evaluate variations in charges, usage, taxes, or totals between multiple bills.\n3) any bill related like concrete examples of specific, targeted questions about particular aspects of bills \n**STRICTLY EXCLUDE** which sounds like **BILL DISPUTE** cases\n4) Any user query sounds regarding bill  strictly exclude **BILL DISPUTE** and strictly exclude which sounds like **Issue keywords:** in **BEST OFFER**\n\n---\n\n#### **3️⃣ CONTRACT RENEWAL**\n\nIf the query includes ANY telecom-related contract management phrases, classify as **\"contract_renewal\"**:\n\n* \"i need to manage my contracts\"\n* \"contract management\"\n* \"how do i renew my contract\"\n* \"i need to purchase new contract\"\n* \"i need to extend contract\"\n\n---\n\n#### **4️⃣ BEST OFFER**\n\nIf the query includes ANY telecom-related issues like (facing network issue, DSL connection problem, DSL light blinking red, etc...) or offer-related words, classify as **\"best_offer\"**.\n\n**Trigger keywords include:**\nwhat is | how to | check | balance | last recharge | offers | plan type | account type | data remaining | sms remaining | current plan | details\n\n**Issue keywords:**\nfacing | connection | network | signal | call | internet | speed | drop | not working | poor | slow | broken | issue | problem | streaming | Wi-Fi | Auto-Debit | recharge | router | Transactions | SIM | Security | Hacking | Spam | Reactivation | SIM related issue | unblock service | SIM blocked | service blocked | broadband related issue | Router or Modem |  Switching from Broadband to Fiber | Temporary Suspension | Reactivation of Service | DSL Connection |  Fiber Optic issue | WiFi disconnection |  Slow broadband | network speed |  Streaming Services\n\n**Offer keywords:**\noffer | best plan | available plans | promotion | discount | scheme | special plan | new offer | current offers | upgrade options | plan benefits | sms revenue | data revenue | customer name | customer balance | call count | msisdn | phone number of customer | name of customer | current product | recommended product | broadband | calls not connecting | know my offer | telecom related issue | network issue\n\n---\n\n#### **5️⃣ CHANGE PLAN**\n\nIf the query mentions changing, switching, upgrading, or migrating plans, classify as **\"change_plan\"**.\n\n**Examples:**\n\n* \"I need to change the customer’s plan.\"\n* \"I’d like to change the plan for this customer.\"\n* \"Please change the customer’s plan.\"\n* \"Need to update customer’s plan details.\"\n* \"Customer wants to replace the current plan.\"\n* \"There is a plan change request from customer.\"\n\n**Keywords:**\nchange plan | switch to another plan | change my current plan | upgrade plan | move from current plan to another plan | plan switching | plan migration | migrate to another plan | move from current plan to a different one | modify plan\n\n---\n\n#### **6️⃣ ORDER STATUS**\n\nIf the query mentions checking, confirming, or troubleshooting the **status of a customer’s order**, classify as **\"order_status\"**.\n\n**Examples:**\n\n* \"Has the order been stuck at any stage?\"\n* \"Is there any issue with the customer’s order processing?\"\n* \"Can you check if the customer’s order is on hold?\"\n* \"Is the order still in progress or completed?\"\n* \"What’s the status of the customer’s order?\"\n* \"Can you tell me the current status of the customer's order?\"\n* \"Please get me the latest update on this customer’s order.\"\n* \"The customer says they haven’t received the order yet — can you confirm the status?\"\n* \"Looks like the customer's order is stuck — can you find out why?\"\n\n**Keywords:**\norder | status | update | progress | stage | processing | on hold | stuck | issue with order tracking | order delayed | order confirm | received | pending | completed | customer | tracking\n\n---\n#### **7️⃣ TICKET STATUS**\n\nIf the query mentions to view ticket details, ticket status, current ticket status, ticket summary or sounds like ticket status/summary/details classify as **\"ticket_status\"**.\n\n**Examples:**\n\n* \"I want to view ticket details of a customer.\"\n* \"I’d like to see customer ticket summary .\"\n* \"want to view customer's ticket details\"\n\n\n---\n\n\n\n\n#### **8️⃣ GENERAL**\n\nIf none of the above categories match, classify the query as **\"general\"**.\n\n---\n\n### EXAMPLES:\n\nI have high bill usage → {\"intent\": \"bill_dispute\"}\nMy bill is too high → {\"intent\": \"bill_dispute\"}\nCan you provide a summary of the customer's billing details? → {\"intent\": \"bill_summary\"}\nCan you please elaborate more on this bill → {\"intent\": \"bill_summary\"}\nI want to know customers balance → {\"intent\": \"best_offer\"}\nCustomer is facing call drop frequently → {\"intent\": \"best_offer\"}\nI want to know offer of a customer → {\"intent\": \"best_offer\"}\ncustomer SIM got blocked → {\"intent\": \"best_offer\"}\nSIM blocked → {\"intent\": \"best_offer\"}\nfacing DSL connection issue → {\"intent\": \"best_offer\"}\nDSL connection issue → {\"intent\": \"best_offer\"}\nI need to change the customer’s plan → {\"intent\": \"change_plan\"}\nDSL light blinking red → {\"intent\": \"best_offer\"}\nCustomer wants to switch to another plan → {\"intent\": \"change_plan\"}\nPlease change the customer’s plan → {\"intent\": \"change_plan\"}\nHas the order been stuck at any stage? → {\"intent\": \"order_status\"}\nWhat’s the status of the customer’s order? → {\"intent\": \"order_status\"}\nThe customer says they haven’t received the order yet — can you confirm the status? → {\"intent\": \"order_status\"}\nWant to know ticket details of a customer → {\"intent\": \"ticket_status\"}\nWant to view ticket details of a customer → {\"intent\": \"ticket_status\"}\nWant to know ticket status of a customer → {\"intent\": \"ticket_status\"}\nHow to change language? → {\"intent\": \"general\"}\nHow are you? → {\"intent\": \"general\"}\n* “Compare these two bills”  → {\"intent\": \"bill_summary\"}\n* “What is the difference between last month’s bill and this month’s?”  → {\"intent\": \"bill_summary\"}\n* “Show month-to-month variation in my bill”  → {\"intent\": \"bill_summary\"}\n* “Why is my November bill higher than October?”  → {\"intent\": \"bill_summary\"}\n* “What is my due amount and due date?  → {\"intent\": \"bill_summary\"}\n* “Did I pay my last bill?” / “Show payment history.”  → {\"intent\": \"bill_summary\"}\n* “What plan am I currently on?”  → {\"intent\": \"bill_summary\"}\n* \"When was this invoice issued according to this bill?\"  → {\"intent\": \"bill_summary\"}\n* \"How much VAT has been applied and at what rate in aug month bill?\"  → {\"intent\": \"bill_summary\"}\n* \"What product does this invoice correspond to?\"  → {\"intent\": \"bill_summary\"}\n* \"How many active connections are being billed this month?\"  → {\"intent\": \"bill_summary\"}\n* \"What is my due amount and due date?\"  → {\"intent\": \"bill_summary\"}\n* \"What are the late payment charges in this bill?\"  → {\"intent\": \"bill_summary\"}\n* \"What plan am I currently on?\"  → {\"intent\": \"bill_summary\"}\n* \"want to know the taxes in my bill.\"  → {\"intent\": \"bill_summary\"}\n* \"Show me my itemized bill.\"  → {\"intent\": \"bill_summary\"}\n* \"What are the components in this bill?\"  → {\"intent\": \"bill_summary\"}\n* \"What is my due amount and due date?\"  → {\"intent\": \"bill_summary\"}\n\n\n**OUTPUT FORMAT - MUST FOLLOW EXACTLY**:\nOutput ONLY pure JSON in this exact format with NO markdown, NO backticks, NO code blocks:\n{\"intent\": \"classified_intent_here\"}\n\nDO NOT include any text before or after the JSON.\nDO NOT wrap the JSON in `json` tags.\nOutput the raw JSON object directly.",
+        "options": {}
+      },
+      "id": "1d7ad2f1-a4a4-4585-95ea-f2d1278643eb",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        -9920,
+        -3960
+      ],
+      "typeVersion": 1.9
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Webhook').item.json.body.sessionId }}",
+        "contextWindowLength": 20
+      },
+      "id": "ecbfc35b-ba64-45dd-b770-23ed652687b5",
+      "name": "Redis Chat Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryRedisChat",
+      "position": [
+        -9800,
+        -3680
+      ],
+      "typeVersion": 1.5,
+      "credentials": {
+        "redis": {
+          "id": "YCWins8Rwtl5S66K",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o",
+          "cachedResultName": "gpt-4o"
+        },
+        "options": {}
+      },
+      "id": "55fb65e9-1995-40c0-87ba-c3e932fabfa6",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "position": [
+        -10020,
+        -3700
+      ],
+      "typeVersion": 1.2,
+      "credentials": {
+        "openAiApi": {
+          "id": "kh9HMSKts65s1TiQ",
+          "name": "CRM demo setup key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "set",
+        "key": "=user:{{ $('Webhook').item.json.body.sessionId }}:intent",
+        "value": "={{ $json.intent }}"
+      },
+      "id": "97081ffc-a3cb-4ce8-b983-f5fcd21b584f",
+      "name": "Redis",
+      "type": "n8n-nodes-base.redis",
+      "position": [
+        -9320,
+        -3960
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "redis": {
+          "id": "YCWins8Rwtl5S66K",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse the AI response to extract intent\nconst aiOutput = $json.output;\n\n// Remove markdown code blocks and parse JSON\nconst cleanOutput = aiOutput.replace(/```json\\n?/g, '').replace(/```/g, '').trim();\n\ntry {\n  const parsed = JSON.parse(cleanOutput);\n  // Temporarily hardcode or skip sessionId to test intent parsing\n  return [{\n    json: {\n      intent: parsed.intent,  // Hardcoded for testing\n    }\n  }];\n} catch (error) {\n  return [{\n    json: {\n      intent: \"unclear\",\n      confidence: 0.0,\n      reasoning: \"Failed to parse AI response\",\n      error: error.message,\n      raw_output: aiOutput\n    }\n  }];\n}"
+      },
+      "id": "0359bfd4-b236-4bad-ac14-94aa143a82b8",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        -9560,
+        -3960
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "propertyName": "intent",
+        "key": "=user:{{ $('Webhook').item.json.body.sessionId }}:intent",
+        "options": {
+          "dotNotation": false
+        }
+      },
+      "id": "2426234c-654b-4f79-b183-87d26fc9d355",
+      "name": "Redis1",
+      "type": "n8n-nodes-base.redis",
+      "position": [
+        -10860,
+        -3480
+      ],
+      "typeVersion": 1,
+      "alwaysOutputData": true,
+      "credentials": {
+        "redis": {
+          "id": "YCWins8Rwtl5S66K",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "59fa9784-2d3a-46eb-89c2-8a41b7a1de6c",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              },
+              "leftValue": "={{ $json.should_classify }}",
+              "rightValue": "null"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "653568ca-48e1-4cc9-afc1-6d5d25519c24",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        -10280,
+        -3480
+      ],
+      "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "07042616-7587-4420-8f96-30b9137a57de",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "leftValue": "={{ $json.current_intent }} ",
+                    "rightValue": "general"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "general"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "19276098-d2b1-482a-a9e2-38a2bed87879",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "leftValue": "={{ $json.current_intent }}",
+                    "rightValue": "best_offer"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "best_offer"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "306c7a4c-79b9-4565-8a6b-ce5e50bc93e2",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "leftValue": "={{ $json.current_intent }}",
+                    "rightValue": "bill_dispute"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "bill_dispute"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "93fb5834-8bdf-4834-be46-a2111cb1aa2f",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "leftValue": "={{ $json.current_intent }}",
+                    "rightValue": "contract_renewal"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "=contract_renewal"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "c910b295-c178-430e-98a0-ab65cf5bb592",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "leftValue": "={{ $json.current_intent }}",
+                    "rightValue": "bill_summary"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "bill_summary"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "10d9fd90-a612-40d6-941b-79a36bcf5e31",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "leftValue": "={{ $json.current_intent }}",
+                    "rightValue": "change_plan"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "change_plan"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "1e8b435f-2c18-4a2d-9f13-7695d97b0cb8",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "leftValue": "={{ $json.current_intent }}",
+                    "rightValue": "order_status"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "order_status"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "6531682f-e2bc-4149-9a8d-28b7a3f81d53",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "leftValue": "={{ $json.current_intent }}",
+                    "rightValue": "ticket_status"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "ticket_status"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "8dd3e5b3-299a-43c7-88cc-04b71f34b9c3",
+      "name": "Switch",
+      "type": "n8n-nodes-base.switch",
+      "position": [
+        -9940,
+        -3020
+      ],
+      "typeVersion": 3.2
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=🚨 ABSOLUTE FIRST RULE - OVERRIDES EVERYTHING 🚨:\nNEVER OUTPUT: {\"intent\": \"general\"} or ANY JSON containing \"intent\" field.\nIF you see yourself about to output \"intent\" → STOP → Follow rules below instead.\n\nUser Input : {{ $('Webhook').item.json.body.chatInput }} \n\n**INITIAL GREETING RULE**:\n- ONLY at the very start of a new conversation with no prior context\n- Respond with this exact message (plain text only, no JSON, no formatting): How can I help you today?\n- DO NOT output JSON\n- DO NOT ask for phone number\n\n**CLOSING INTERACTION RULE**:\n- This rule ONLY applies when the immediate previous AIMessage content ended with EITHER:\n  - \"Is there anything else I can assist you with?\" OR\n  - \"If you have any questions, feel free to ask!\"\n- Check the last AIMessage \"content\" field for these exact closing statements\n- If the last AIMessage content DOES NOT contain these closing statements → DO NOT apply this rule → Process as normal telecom query\n- If found AND user responds with \"no\", \"no thanks\", \"nope\", \"nothing else\", \"that's all\", \"I'm good\", or similar denial responses:\n  - Respond with this exact message (plain text only, no JSON, no formatting): Thank you! Have a great day!\n  - DO NOT output \"How can I help you today?\"\n  - DO NOT output JSON\n  - DO NOT ask for phone number\n  - STOP processing - conversation ends here\n- If found AND user responds with \"yes\", \"ya\", \"sure\", \"s\", \"i need assistance\", or similar accepting responses:\n  - Respond with this exact message (plain text only, no JSON, no formatting): How can I assist you today?\n  - DO NOT output \"Thank you! Have a great day!\"\n  - DO NOT output JSON\n  - Wait for user's next query\n\n**CONTEXT DETECTION PRIORITY**:\n1. FIRST: Check the last AIMessage \"content\" field in conversation history\n2. Does it end with \"Is there anything else I can assist you with?\" OR \"If you have any questions, feel free to ask!\"?\n3. If YES → Apply CLOSING INTERACTION RULE based on user's response (yes/no)\n4. If NO → The user's \"no\" is a general response, not a closing denial → Process as normal telecom query following JSON extraction rules below\n5. IMPORTANT: A standalone \"no\" after \"How can I help you today?\" is NOT a closing denial - it should be processed as a telecom query or clarification request\n\n**EXAMPLE SCENARIOS**:\n\nScenario 1 (NOT a closing interaction):\n- Last AIMessage: \"How can I help you today?\"\n- User: \"no\"\n- Action: Process as telecom query (may ask for clarification or phone number)\n**Must follow** :\nScenario 2 (IS a closing interaction - denial):\n- Last AIMessage contains: \"Is there anything else I can assist you with?\"\n- User: \"no\"\n- Action: Output exactly: \"Thank you! Have a great day!\"\nStrict Rule:\n- denying response for Scenario 2 never respond user : \"How can I help you today?\"\n\nScenario 3 (IS a closing interaction - acceptance):\n- Last AIMessage: \"If you have any questions, feel free to ask!\"\n- User: \"yes\"\n- Action: Output \"How may I assist you further?\"",
+        "options": {}
+      },
+      "id": "f010634a-36c7-428e-9e0e-b772424d2f61",
+      "name": "AI Agent1",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        -9600,
+        -3460
+      ],
+      "executeOnce": false,
+      "typeVersion": 1.9,
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o",
+          "cachedResultName": "gpt-4o"
+        },
+        "options": {}
+      },
+      "id": "b03fe6f5-6b17-4218-a142-1a3365a9af0d",
+      "name": "OpenAI Chat Model1",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "position": [
+        -9700,
+        -3180
+      ],
+      "typeVersion": 1.2,
+      "credentials": {
+        "openAiApi": {
+          "id": "kh9HMSKts65s1TiQ",
+          "name": "CRM demo setup key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "07042616-7587-4420-8f96-30b9137a57de",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "leftValue": "={{ $json.intent }}",
+                    "rightValue": "general"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "general"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "19276098-d2b1-482a-a9e2-38a2bed87879",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "leftValue": "={{ $json.intent }}",
+                    "rightValue": "best_offer"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "best_offer"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "306c7a4c-79b9-4565-8a6b-ce5e50bc93e2",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "leftValue": "={{ $json.intent }}",
+                    "rightValue": "bill_dispute"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "bill_dispute"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "978efb6f-0455-4375-948b-2ce379d92360",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "leftValue": "={{ $json.intent }}",
+                    "rightValue": "contract_renewal"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "contract_renewal"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "3b6e8451-5939-4e2d-9f7f-c6d2b2e0efe8",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "leftValue": "={{ $json.intent }}",
+                    "rightValue": "bill_summary"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "bill_summary"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "e0248ef0-7b97-4248-92c5-a20b0512368c",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "leftValue": "={{ $json.intent }}",
+                    "rightValue": "change_plan"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "change_plan"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "a81740b8-966f-46b1-9878-a22b069702a7",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "leftValue": "={{ $json.intent }}",
+                    "rightValue": "order_status"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "order_status"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "0a124dfb-7aaf-4241-91a4-ce44f17c632c",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "leftValue": "={{ $json.intent }}",
+                    "rightValue": "ticket_status"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "ticket_status"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "11c0905c-8e8c-4130-a6fb-4c493c2d7f9b",
+      "name": "Switch1",
+      "type": "n8n-nodes-base.switch",
+      "position": [
+        -8840,
+        -3880
+      ],
+      "typeVersion": 3.2
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://10.0.13.74:8090/unicast",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"clientId\": \"{{ $('Webhook').item.json.query.client_id }}\",\n  \"output\": \"{{ $json.output }}\",\n  \"event\": {\n   \n  },\n  \"extra\": [\n    {\n      \"type\": \"\",\n      \"content\": {}\n    },\n    {\n      \"type\": \"\",\n      \"options\": []\n    }\n  ]\n}\n\n\n",
+        "options": {
+          "allowUnauthorizedCerts": true
+        }
+      },
+      "id": "28ab8d9f-6b85-43a2-8116-dd505f8c6d61",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        -9280,
+        -3460
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f7a8c6d5-4dd0-4b79-8ab8-02915ec1a6c2",
+              "name": "output",
+              "type": "string",
+              "value": "={{ $('Redis3').item.json.output }}\n"
+            },
+            {
+              "id": "dbf6ab74-209b-4345-bf1f-a19b023c45d0",
+              "name": "intent",
+              "type": "string",
+              "value": "={{ $json.intent }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d7580678-81c4-4067-b682-5e5309e4245f",
+      "name": "Edit Fields1",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -10680,
+        -3480
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract intent from Redis GET responses\nlet extractedIntent = null;\ntry {\n    // Get data from the Edit Fields node\n    const inputData = $input.first().json;\n    \n    // Handle your data structure\n    if (inputData) {\n        // Check if we have direct intent field\n        if (inputData.intent !== null && inputData.intent !== undefined) {\n            extractedIntent = inputData.intent === 'general' ? null : inputData.intent;\n        }\n        \n        // Check if output indicates completion\n        if (inputData.output && typeof inputData.output === 'string') {\n            const completionPatterns = [\n                /Transaction ID:\\s*\\d+/,\n                /Ticket ID:\\s*\\d+/,\n                /OrderID:\\s*\\d+/,\n                /Service Request Number:\\s*SR#\\d+/,\n                /You're welcome!.*Have a great day/i,\n                /Thank you!.*Have a great day!?/i,\n                /How can I assist you today?/i,\n                /Everything went smoothly during this stage. ✅/i,\n                / Everything went smoothly during this stage./i,\n                /Status Created On: November 3, 2025, at 10:44 AM/i,\n                /The team is keeping a close eye on it./i,\n                /Is there anything else I can assist you with/i,\n                /Is there anything else I can assist you with?/i,\n                /If you have any questions, feel free to ask!/i,\n                /Is there anything else I can assist you with?/i,\n                /The issue is still pending resolution./i,\n                /Feel free to ask if you have any questions!/i,\n                /Let me know if you need anything else!/i,\n                /If you have any questions, feel free to ask!/i,\n                /Great! Let me know if you need further help./i,\n                /No problem! Is there anything else I can help you with?/i,\n            ];\n            \n            const hasCompletion = completionPatterns.some(pattern => \n                pattern.test(inputData.output)\n            );\n            \n            if (hasCompletion) {\n                extractedIntent = null;\n            }\n        }\n    }\n    \n    return [{\n        json: {\n            current_intent: extractedIntent,\n            has_existing_intent: !!extractedIntent,\n            should_classify: !extractedIntent,\n            extracted_successfully: !!extractedIntent\n        }\n    }];\n    \n} catch (error) {\n    return [{\n        json: {\n            current_intent: null,\n            has_existing_intent: false,\n            should_classify: true,\n            extracted_successfully: false,\n            error: error.message\n        }\n    }];\n}"
+      },
+      "id": "ec5d449e-b53d-4ac4-ab4c-cb20341e5143",
+      "name": "Code3",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        -10500,
+        -3480
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "7070b6aa-0c7d-4c7b-acd1-131cb246faf6",
+        "options": {}
+      },
+      "id": "1f1d3ece-2a88-46b2-b043-ca759d236237",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "position": [
+        -11260,
+        -3480
+      ],
+      "webhookId": "7070b6aa-0c7d-4c7b-acd1-131cb246faf6",
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a52e92dd-2f20-41f1-9bde-9c19cf38c5c6",
+              "name": "sessionId",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.body.sessionId }}"
+            },
+            {
+              "id": "0bd0fe92-bf48-49ac-9e64-439aa5dc9b3f",
+              "name": "client_id",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.query.client_id }}"
+            },
+            {
+              "id": "d5223df6-9e03-4057-8df4-84d1814d8f28",
+              "name": "chatInput",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.body.chatInput }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "fc207deb-4b68-48d6-ad0d-46fd12fc5284",
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -7440,
+        -4120
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "G98ZEmU4vQ9ccVvT",
+          "cachedResultName": "bill_dispute_crm_namratha"
+        },
+        "workflowInputs": {
+          "value": {},
+          "schema": [],
+          "mappingMode": "defineBelow",
+          "matchingColumns": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "id": "eaca60cf-60bb-49bb-bfda-531713b93d1b",
+      "name": "Execute Workflow",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "position": [
+        -7200,
+        -4120
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a52e92dd-2f20-41f1-9bde-9c19cf38c5c6",
+              "name": "sessionId",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.body.sessionId }}"
+            },
+            {
+              "id": "0bd0fe92-bf48-49ac-9e64-439aa5dc9b3f",
+              "name": "client_id",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.query.client_id }}"
+            },
+            {
+              "id": "d5223df6-9e03-4057-8df4-84d1814d8f28",
+              "name": "chatInput",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.body.chatInput }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ebcfa27f-7d3b-4676-a4cb-3d22de398abb",
+      "name": "Edit Fields2",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -7600,
+        -3620
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "6TIzos1nEIZpPcu5",
+          "cachedResultName": "contract_renewal_integration_with_crm_somia"
+        },
+        "workflowInputs": {
+          "value": {},
+          "schema": [],
+          "mappingMode": "defineBelow",
+          "matchingColumns": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "id": "ac6da3ad-bf6d-460e-a7c6-2c48f5d8152c",
+      "name": "Execute Workflow1",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "position": [
+        -7360,
+        -3620
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a52e92dd-2f20-41f1-9bde-9c19cf38c5c6",
+              "name": "sessionId",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.body.sessionId }}"
+            },
+            {
+              "id": "0bd0fe92-bf48-49ac-9e64-439aa5dc9b3f",
+              "name": "client_id",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.query.client_id }}"
+            },
+            {
+              "id": "d5223df6-9e03-4057-8df4-84d1814d8f28",
+              "name": "chatInput",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.body.chatInput }}"
+            },
+            {
+              "id": "2c9ddb0e-d2cd-4a90-91c4-57010b479ffd",
+              "name": "entity_id",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.headers.entity_id }}"
+            },
+            {
+              "id": "932fa38c-a085-4136-8f1d-1338a022f26b",
+              "name": "msg_id",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.body.msg_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "27f577c0-f6c1-4aef-8b13-0aad52f3f90a",
+      "name": "Edit Fields3",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -7920,
+        -4540
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "zEYzGZYmwOIkSuk3",
+          "cachedResultName": "CRM SIM related issues development V1.2"
+        },
+        "workflowInputs": {
+          "value": {},
+          "schema": [],
+          "mappingMode": "defineBelow",
+          "matchingColumns": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "id": "658946a1-8f8d-494b-b033-10608823c08f",
+      "name": "Execute Workflow2",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "position": [
+        -7260,
+        -4520
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "operation": "set",
+        "key": "=user:{{ $('Webhook').item.json.body.sessionId }}:output",
+        "value": "={{ $json.message.output }}"
+      },
+      "id": "55e13343-d485-4bab-9caa-7442859ccb15",
+      "name": "Redis4",
+      "type": "n8n-nodes-base.redis",
+      "position": [
+        -6980,
+        -4120
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "redis": {
+          "id": "YCWins8Rwtl5S66K",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "propertyName": "output",
+        "key": "=user:{{ $('Webhook').item.json.body.sessionId }}:output",
+        "options": {
+          "dotNotation": false
+        }
+      },
+      "id": "3400199c-7176-4ed4-a442-9c64c583f05b",
+      "name": "Redis3",
+      "type": "n8n-nodes-base.redis",
+      "position": [
+        -11040,
+        -3480
+      ],
+      "typeVersion": 1,
+      "alwaysOutputData": true,
+      "credentials": {
+        "redis": {
+          "id": "YCWins8Rwtl5S66K",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "set",
+        "key": "=user:{{ $('Webhook').item.json.body.sessionId }}:output",
+        "value": "={{ $json.message.output }}{{ $json.output }}"
+      },
+      "id": "a4e6b37c-03dc-43c6-bb57-db00e067e1ac",
+      "name": "Redis5",
+      "type": "n8n-nodes-base.redis",
+      "position": [
+        -7080,
+        -4520
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "redis": {
+          "id": "YCWins8Rwtl5S66K",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "set",
+        "key": "=user:{{ $('Webhook').item.json.body.sessionId }}:output",
+        "value": "={{ $json.message.output }}"
+      },
+      "id": "9105299e-f30d-405c-9a7d-3cb38ad8686a",
+      "name": "Redis6",
+      "type": "n8n-nodes-base.redis",
+      "position": [
+        -7100,
+        -3620
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "redis": {
+          "id": "YCWins8Rwtl5S66K",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "combinator": "or",
+          "conditions": [
+            {
+              "id": "356b7a01-6752-4ec5-8a9e-f508cb591183",
+              "operator": {
+                "name": "filter.operator.equals",
+                "type": "string",
+                "operation": "equals"
+              },
+              "leftValue": "={{ $json.entity_id }}",
+              "rightValue": "undefined"
+            },
+            {
+              "id": "92c24006-1523-4695-942e-64de10768f9d",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              },
+              "leftValue": "={{ $json.entity_id }}",
+              "rightValue": "undefined"
+            },
+            {
+              "id": "136093f8-550d-4dce-9fb4-b5d533826412",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              },
+              "leftValue": "={{ $json.entity_id }}",
+              "rightValue": ""
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "91f478a1-072f-49a1-955c-043045a10943",
+      "name": "If1",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        -7700,
+        -4540
+      ],
+      "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a52e92dd-2f20-41f1-9bde-9c19cf38c5c6",
+              "name": "sessionId",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.body.sessionId }}"
+            },
+            {
+              "id": "0bd0fe92-bf48-49ac-9e64-439aa5dc9b3f",
+              "name": "client_id",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.query.client_id }}"
+            },
+            {
+              "id": "d5223df6-9e03-4057-8df4-84d1814d8f28",
+              "name": "chatInput",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.body.chatInput }}"
+            },
+            {
+              "id": "2c9ddb0e-d2cd-4a90-91c4-57010b479ffd",
+              "name": "entity_id",
+              "type": "string",
+              "value": "=200"
+            },
+            {
+              "id": "2a7ca98a-d9ef-4dae-808f-be65c024671d",
+              "name": "msg_id",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.body.msg_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2e128375-ea7d-41af-9a66-238b9e16035b",
+      "name": "Edit Fields4",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -7460,
+        -4640
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Webhook').item.json.body.sessionId }}",
+        "contextWindowLength": 20
+      },
+      "id": "00a94035-e14d-4ea5-92d0-1b0cc10e26aa",
+      "name": "Redis Chat Memory1",
+      "type": "@n8n/n8n-nodes-langchain.memoryRedisChat",
+      "position": [
+        -9500,
+        -3240
+      ],
+      "typeVersion": 1.5,
+      "credentials": {
+        "redis": {
+          "id": "YCWins8Rwtl5S66K",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-120b",
+        "options": {}
+      },
+      "id": "ea5280df-5ba2-43a1-b7ee-03d447eefc2f",
+      "name": "Groq Chat Model1",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "position": [
+        -9960,
+        -3580
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "groqApi": {
+          "id": "SfsdVz12EzC0cCFi",
+          "name": "Anushri"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-120b",
+        "options": {}
+      },
+      "id": "8f2345b1-bf4f-4284-9772-7860fefb46dc",
+      "name": "Groq Chat Model2",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "position": [
+        -9600,
+        -3160
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "groqApi": {
+          "id": "SfsdVz12EzC0cCFi",
+          "name": "Anushri"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a customer service intent classifier. Classify the user query {{ $('Webhook').item.json.body.chatInput }} into exactly one category.\n\n**CRITICAL OUTPUT RULES**:\n- Output MUST be valid JSON ONLY - NO markdown code blocks, NO ```json``` tags, NO extra formatting\n- Output MUST be pure JSON starting with { and ending with }\n- DO NOT wrap output in code blocks or backticks\n- Example of CORRECT output: {\"intent\": \"bill_dispute\"}\n- Example of WRONG output: ```json\\n{\"intent\": \"bill_dispute\"}\\n```\n\nCLASSIFICATION RULES:\n\nIf the query mentions ANY of the following phrases or keywords, classify as \"bill_dispute\":\n\"i have high bill usage\"\n\"i have billing issue\"\n\"my bill is too high\"\n\"i need to know bill usage\"\n\"bill dispute\"\n\"bill usage\"\nKeywords: |bill|billing usage|bill related issues|\nexclude : \"sounds like bill summary\"\n\nIf the query mentions ANY of the following phrases or keywords, classify as \"bill_summary\":\n\"What is the total bill synopsis for this client?\"\n\"Could you give me the customer's bill history summary?\"\n\"Can you please elaborate more on this bill\"\n\"Can you please give more details on this bill\"\n\"Can you provide a summary of the customer's billing details?\"\n\"Requesting a quick recap of the client's bill information.\"\nany kind query that sounds like requesting to provide bill summary, requesting to know more details on bill, sounds like detail of bill, elaborate etc.\n\nIf the query includes ANY telecom-related issues with keywords like:\n\"i need to manage my contracts\"\n\"contract management\"\n\"how do i renew my contract\"\n\"i need to purchase new contract\"\n\"i need to extend contract\"\nThen classify as \"contract_renewal\"\n\nIf the query includes ANY telecom-related issues with keywords like:\nTrigger keywords: what is|how to|check|balance|last recharge|offers|plan type|account type|data remaining|sms remaining|current plan|details\nISSUES (Problem descriptions): Trigger keywords: \nfacing|connection|network|signal|call|internet|speed|drop|not working|poor|slow|broken|issue|problem|streaming|Wi-Fi|Auto-Debit|recharge|router|Transactions|SIM|Security|Hacking|Spam|Reactivation|SIM related issue|unblock service|SIM blocked|service blocked etc.\nOFFER KEYWORDS: Trigger words for offer responses: offer|best plan|available plans|promotion|discount|scheme|special plan|new offer|current offers|upgrade options|plan benefits|sms revenue|data revenue|customer name|customer balance|call count|msisdn|phone number of customer|name of customer|current product|recommended product|broadband|calls not connecting|know my offer| telecom related issue| network issue\nThen classify as \"best_offer\"\n\nIf none of the above match, classify the query as \"general\"\n\nEXAMPLES:\n\"I have high bill usage\" → {\"intent\": \"bill_dispute\"}\n\"My bill is too high\" → {\"intent\": \"bill_dispute\"}\n\"Can you provide a summary of the customer's billing details?\" → {\"intent\": \"bill_summary\"}\n\"Can you please elaborate more on this bill\" → {\"intent\": \"bill_summary\"}\n\"Can you please give more details on this bill\" → {\"intent\": \"bill_summary\"}\n\"Can you provide a summary of the customer's billing details?\" → {\"intent\": \"bill_summary\"}\n\"I want to know customers balance\" → {\"intent\": \"best_offer\"}\n\"Customer is facing call drop frequently\" → {\"intent\": \"best_offer\"}\n\"I want to know offer of a customer\" → {\"intent\": \"best_offer\"}\n\"How to change language?\" → {\"intent\": \"general\"}\n\"customer SIM got blocked\" → {\"intent\": \"best_offer\"}\n\"SIM blocked\" → {\"intent\": \"best_offer\"}\n\n**OUTPUT FORMAT - MUST FOLLOW EXACTLY**:\nOutput ONLY pure JSON in this exact format with NO markdown, NO backticks, NO code blocks:\n{\"intent\": \"classified_intent_here\"}\n\nDO NOT include any text before or after the JSON.\nDO NOT wrap the JSON in ```json``` tags.\nOutput the raw JSON object directly.",
+        "options": {}
+      },
+      "id": "0f20e39b-0d4b-47a1-9efe-609f757b0471",
+      "name": "AI Agent4",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        -10380,
+        -4420
+      ],
+      "typeVersion": 1.9
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Webhook').item.json.body.sessionId }}",
+        "contextWindowLength": 20
+      },
+      "id": "12d18e65-f247-4a38-956e-226105339e08",
+      "name": "Redis Chat Memory4",
+      "type": "@n8n/n8n-nodes-langchain.memoryRedisChat",
+      "position": [
+        -10280,
+        -4200
+      ],
+      "typeVersion": 1.5,
+      "credentials": {
+        "redis": {
+          "id": "YCWins8Rwtl5S66K",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "id": "7daa6f7b-f1aa-4b1d-bbef-e4062b8721bd",
+      "name": "OpenAI Chat Model3",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "position": [
+        -10360,
+        -4240
+      ],
+      "typeVersion": 1.2,
+      "credentials": {
+        "openAiApi": {
+          "id": "kh9HMSKts65s1TiQ",
+          "name": "CRM demo setup key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-120b",
+        "options": {}
+      },
+      "id": "356bad1a-23da-4ec5-bd1c-b196f57d5535",
+      "name": "Groq Chat Model4",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "position": [
+        -10400,
+        -4140
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "groqApi": {
+          "id": "SfsdVz12EzC0cCFi",
+          "name": "Anushri"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "nGO3teRqDorxN5wc",
+          "cachedResultName": "CRM change plan"
+        },
+        "workflowInputs": {
+          "value": {},
+          "schema": [],
+          "mappingMode": "defineBelow",
+          "matchingColumns": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "id": "12362d47-3dda-4bc0-a493-524b41554f23",
+      "name": "Execute Workflow3",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "position": [
+        -7220,
+        -3120
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "operation": "set",
+        "key": "=user:{{ $('Webhook').item.json.body.sessionId }}:output",
+        "value": "={{ $json.message.output }}"
+      },
+      "id": "30235807-d033-410e-996b-c42d1090905c",
+      "name": "Redis11",
+      "type": "n8n-nodes-base.redis",
+      "position": [
+        -7020,
+        -3120
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "redis": {
+          "id": "YCWins8Rwtl5S66K",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a52e92dd-2f20-41f1-9bde-9c19cf38c5c6",
+              "name": "sessionId",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.body.sessionId }}"
+            },
+            {
+              "id": "0bd0fe92-bf48-49ac-9e64-439aa5dc9b3f",
+              "name": "client_id",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.query.client_id }}"
+            },
+            {
+              "id": "d5223df6-9e03-4057-8df4-84d1814d8f28",
+              "name": "chatInput",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.body.chatInput }}"
+            },
+            {
+              "id": "2c9ddb0e-d2cd-4a90-91c4-57010b479ffd",
+              "name": "entity_id",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.headers.entity_id }}"
+            },
+            {
+              "id": "932fa38c-a085-4136-8f1d-1338a022f26b",
+              "name": "msg_id",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.body.msg_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b2a6a1d0-bf01-4570-aaf8-7f276aa49621",
+      "name": "Edit Fields11",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -7940,
+        -3140
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "combinator": "or",
+          "conditions": [
+            {
+              "id": "356b7a01-6752-4ec5-8a9e-f508cb591183",
+              "operator": {
+                "name": "filter.operator.equals",
+                "type": "string",
+                "operation": "equals"
+              },
+              "leftValue": "={{ $json.entity_id }}",
+              "rightValue": "undefined"
+            },
+            {
+              "id": "92c24006-1523-4695-942e-64de10768f9d",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              },
+              "leftValue": "={{ $json.entity_id }}",
+              "rightValue": "undefined"
+            },
+            {
+              "id": "136093f8-550d-4dce-9fb4-b5d533826412",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              },
+              "leftValue": "={{ $json.entity_id }}",
+              "rightValue": ""
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b5e57ceb-fac2-4401-b42a-431726a9b70b",
+      "name": "If2",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        -7740,
+        -3140
+      ],
+      "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a52e92dd-2f20-41f1-9bde-9c19cf38c5c6",
+              "name": "sessionId",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.body.sessionId }}"
+            },
+            {
+              "id": "0bd0fe92-bf48-49ac-9e64-439aa5dc9b3f",
+              "name": "client_id",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.query.client_id }}"
+            },
+            {
+              "id": "d5223df6-9e03-4057-8df4-84d1814d8f28",
+              "name": "chatInput",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.body.chatInput }}"
+            },
+            {
+              "id": "2c9ddb0e-d2cd-4a90-91c4-57010b479ffd",
+              "name": "entity_id",
+              "type": "string",
+              "value": "=200"
+            },
+            {
+              "id": "2a7ca98a-d9ef-4dae-808f-be65c024671d",
+              "name": "msg_id",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.body.msg_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "6f48a74c-ed62-49d0-80d9-274147e6f15c",
+      "name": "Edit Fields12",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -7460,
+        -3260
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "content": "# Contract renewal ",
+        "height": 300,
+        "width": 520,
+        "color": 2
+      },
+      "id": "1ccafc19-6de4-4c87-8260-244992add575",
+      "name": "Sticky Note5",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -7440,
+        -3700
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "# Bill Dispute",
+        "height": 240,
+        "width": 500,
+        "color": 2
+      },
+      "id": "326bf210-d3d2-4f6e-940d-ab792bee4457",
+      "name": "Sticky Note6",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -7260,
+        -4200
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "# SIM block,best offer,Issues",
+        "height": 240,
+        "width": 500,
+        "color": 2
+      },
+      "id": "1e512ed1-51f0-49fc-ab59-d7ac93213b9d",
+      "name": "Sticky Note7",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -7300,
+        -4600
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "# Change Plan\n ",
+        "height": 340,
+        "width": 460,
+        "color": 2
+      },
+      "id": "c7eea909-6e40-440d-a4cd-6b542862375c",
+      "name": "Sticky Note8",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -7280,
+        -3260
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "# Refer to upload bill pdf to openapi files :\n## CRM Customer Invoice Upload Automation v1.0\n",
+        "height": 180,
+        "width": 740
+      },
+      "id": "a828ea70-6791-49f2-a2f6-148a2ac7aaf7",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -11400,
+        -3900
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a customer service intent classifier. Classify the user query {{ $('Webhook').item.json.body.chatInput }} into exactly one category.\n\n**CRITICAL OUTPUT RULES**:\n\n* Output MUST be valid JSON ONLY - NO markdown code blocks, NO `json` tags, NO extra formatting\n* Output MUST be pure JSON starting with { and ending with }\n* DO NOT wrap output in code blocks or backticks\n* Example of CORRECT output: {\"intent\": \"bill_dispute\"}\n* Example of WRONG output: `json\\n{\"intent\": \"bill_dispute\"}\\n`\n\n---\n\n### CLASSIFICATION RULES:\n\n#### **1️⃣ BILL DISPUTE**\n\nIf the query mentions ANY of the following phrases or keywords, classify as **\"bill_dispute\"**:\n\n* \"i have high bill usage\"\n* \"i have billing issue\"\n* \"my bill is too high\"\n* \"i need to know bill usage\"\n* \"bill dispute\"\n* \"bill usage\"\n\n**Keywords:**\nbill | billing usage | bill related issues\n**Exclude:** \"sounds like bill summary\"\n\n---\n\n#### **2️⃣ BILL SUMMARY**\n\nIf the query mentions ANY of the following phrases or keywords, classify as **\"bill_summary\"**:\n\n* \"What is the total bill synopsis for this client?\"\n* \"Could you give me the customer's bill history summary?\"\n* \"Can you please elaborate more on this bill\"\n* \"Can you please give more details on this bill\"\n* \"Can you provide a summary of the customer's billing details?\"\n* \"Requesting a quick recap of the client's bill information.\"\n\n**Also include:**\nAny query that sounds like requesting to provide bill summary, wanting more details, or elaboration on a bill.\n\n---\n\n#### **3️⃣ CONTRACT RENEWAL**\n\nIf the query includes ANY telecom-related contract management phrases, classify as **\"contract_renewal\"**:\n\n* \"i need to manage my contracts\"\n* \"contract management\"\n* \"how do i renew my contract\"\n* \"i need to purchase new contract\"\n* \"i need to extend contract\"\n\n---\n\n#### **4️⃣ BEST OFFER**\n\nIf the query includes ANY telecom-related issues or offer-related words, classify as **\"best_offer\"**.\n\n**Trigger keywords include:**\nwhat is | how to | check | balance | last recharge | offers | plan type | account type | data remaining | sms remaining | current plan | details\n\n**Issue keywords:**\nfacing | connection | network | signal | call | internet | speed | drop | not working | poor | slow | broken | issue | problem | streaming | Wi-Fi | Auto-Debit | recharge | router | Transactions | SIM | Security | Hacking | Spam | Reactivation | SIM related issue | unblock service | SIM blocked | service blocked\n\n**Offer keywords:**\noffer | best plan | available plans | promotion | discount | scheme | special plan | new offer | current offers | upgrade options | plan benefits | sms revenue | data revenue | customer name | customer balance | call count | msisdn | phone number of customer | name of customer | current product | recommended product | broadband | calls not connecting | know my offer | telecom related issue | network issue\n\n---\n\n#### **5️⃣ CHANGE PLAN**\n\nIf the query mentions changing, switching, upgrading, or migrating plans, classify as **\"change_plan\"**.\n\n**Examples:**\n\n* \"I need to change the customer’s plan.\"\n* \"I’d like to change the plan for this customer.\"\n* \"Please change the customer’s plan.\"\n* \"Need to update customer’s plan details.\"\n* \"Customer wants to replace the current plan.\"\n* \"There is a plan change request from customer.\"\n\n**Keywords:**\nchange plan | switch to another plan | change my current plan | upgrade plan | move from current plan to another plan | plan switching | plan migration | migrate to another plan | move from current plan to a different one | modify plan\n\n---\n\n#### **6️⃣ GENERAL**\n\nIf none of the above categories match, classify the query as **\"general\"**.\n\n---\n\n### EXAMPLES:\n\nI have high bill usage → {\"intent\": \"bill_dispute\"}\nMy bill is too high → {\"intent\": \"bill_dispute\"}\nCan you provide a summary of the customer's billing details? → {\"intent\": \"bill_summary\"}\nCan you please elaborate more on this bill → {\"intent\": \"bill_summary\"}\nI want to know customers balance → {\"intent\": \"best_offer\"}\nCustomer is facing call drop frequently → {\"intent\": \"best_offer\"}\nI want to know offer of a customer → {\"intent\": \"best_offer\"}\ncustomer SIM got blocked → {\"intent\": \"best_offer\"}\nSIM blocked → {\"intent\": \"best_offer\"}\nI need to change the customer’s plan → {\"intent\": \"change_plan\"}\nCustomer wants to switch to another plan → {\"intent\": \"change_plan\"}\nPlease change the customer’s plan → {\"intent\": \"change_plan\"}\nHow to change language? → {\"intent\": \"general\"}\nHow are you? → {\"intent\": \"general\"}\n\n**OUTPUT FORMAT - MUST FOLLOW EXACTLY**:\nOutput ONLY pure JSON in this exact format with NO markdown, NO backticks, NO code blocks:\n{\"intent\": \"classified_intent_here\"}\n\nDO NOT include any text before or after the JSON.\nDO NOT wrap the JSON in `json` tags.\nOutput the raw JSON object directly.\n",
+        "options": {}
+      },
+      "id": "b29de33d-d8e7-4478-95ef-e9baff3f3649",
+      "name": "AI Agent5",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        -9900,
+        -4260
+      ],
+      "typeVersion": 1.9
+    },
+    {
+      "parameters": {
+        "content": "# with change plan",
+        "height": 340,
+        "width": 460
+      },
+      "id": "ba5e6707-21b5-417b-a6d8-785a6692888a",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -9980,
+        -4360
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "RAuvAVnQs8JdVkZM",
+          "cachedResultName": "CRM Order Status OBC Included"
+        },
+        "workflowInputs": {
+          "value": {},
+          "schema": [],
+          "mappingMode": "defineBelow",
+          "matchingColumns": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "id": "076bd9e8-8a4f-4eb0-ad85-0d0fe18befd9",
+      "name": "Execute Workflow4",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "position": [
+        -7440,
+        -2500
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "operation": "set",
+        "key": "=user:{{ $('Webhook').item.json.body.sessionId }}:output",
+        "value": "={{ $json.message.output }}"
+      },
+      "id": "e2159da7-17ea-4870-a8f3-894e9e058f3e",
+      "name": "Redis12",
+      "type": "n8n-nodes-base.redis",
+      "position": [
+        -7240,
+        -2500
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "redis": {
+          "id": "YCWins8Rwtl5S66K",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a52e92dd-2f20-41f1-9bde-9c19cf38c5c6",
+              "name": "sessionId",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.body.sessionId }}"
+            },
+            {
+              "id": "0bd0fe92-bf48-49ac-9e64-439aa5dc9b3f",
+              "name": "client_id",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.query.client_id }}"
+            },
+            {
+              "id": "d5223df6-9e03-4057-8df4-84d1814d8f28",
+              "name": "chatInput",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.body.chatInput }}"
+            },
+            {
+              "id": "2c9ddb0e-d2cd-4a90-91c4-57010b479ffd",
+              "name": "entity_id",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.headers.entity_id }}"
+            },
+            {
+              "id": "932fa38c-a085-4136-8f1d-1338a022f26b",
+              "name": "msg_id",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.body.msg_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c101d9ca-f0d5-4f63-a2c9-7591e66a0569",
+      "name": "Edit Fields13",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -8160,
+        -2520
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "combinator": "or",
+          "conditions": [
+            {
+              "id": "356b7a01-6752-4ec5-8a9e-f508cb591183",
+              "operator": {
+                "name": "filter.operator.equals",
+                "type": "string",
+                "operation": "equals"
+              },
+              "leftValue": "={{ $json.entity_id }}",
+              "rightValue": "undefined"
+            },
+            {
+              "id": "92c24006-1523-4695-942e-64de10768f9d",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              },
+              "leftValue": "={{ $json.entity_id }}",
+              "rightValue": "undefined"
+            },
+            {
+              "id": "136093f8-550d-4dce-9fb4-b5d533826412",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              },
+              "leftValue": "={{ $json.entity_id }}",
+              "rightValue": ""
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "651896d7-42eb-47eb-bf31-7a754cf2427b",
+      "name": "If4",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        -7960,
+        -2520
+      ],
+      "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a52e92dd-2f20-41f1-9bde-9c19cf38c5c6",
+              "name": "sessionId",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.body.sessionId }}"
+            },
+            {
+              "id": "0bd0fe92-bf48-49ac-9e64-439aa5dc9b3f",
+              "name": "client_id",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.query.client_id }}"
+            },
+            {
+              "id": "d5223df6-9e03-4057-8df4-84d1814d8f28",
+              "name": "chatInput",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.body.chatInput }}"
+            },
+            {
+              "id": "2c9ddb0e-d2cd-4a90-91c4-57010b479ffd",
+              "name": "entity_id",
+              "type": "string",
+              "value": "=200"
+            },
+            {
+              "id": "2a7ca98a-d9ef-4dae-808f-be65c024671d",
+              "name": "msg_id",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.body.msg_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "84cae466-d375-4b13-9b21-304907c2c652",
+      "name": "Edit Fields14",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -7680,
+        -2640
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "content": "# Order Status\n ",
+        "height": 340,
+        "width": 460,
+        "color": 2
+      },
+      "id": "742fd597-f8c2-4ed8-bf06-168bca40da27",
+      "name": "Sticky Note9",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -7500,
+        -2640
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "dZ1TaQjpXdAa5CHE",
+          "cachedResultName": "CRM Ticket Creation Status"
+        },
+        "workflowInputs": {
+          "value": {},
+          "schema": [],
+          "mappingMode": "defineBelow",
+          "matchingColumns": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "id": "aad51e09-6846-4c5a-853a-2ec75c834ccb",
+      "name": "Execute Workflow5",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "position": [
+        -7320,
+        -2040
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "operation": "set",
+        "key": "=user:{{ $('Webhook').item.json.body.sessionId }}:output",
+        "value": "={{ $json.message.output }}"
+      },
+      "id": "8d4aabec-bdc9-43d4-8a30-869d906a5aac",
+      "name": "Redis28",
+      "type": "n8n-nodes-base.redis",
+      "position": [
+        -7120,
+        -2040
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "redis": {
+          "id": "YCWins8Rwtl5S66K",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a52e92dd-2f20-41f1-9bde-9c19cf38c5c6",
+              "name": "sessionId",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.body.sessionId }}"
+            },
+            {
+              "id": "0bd0fe92-bf48-49ac-9e64-439aa5dc9b3f",
+              "name": "client_id",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.query.client_id }}"
+            },
+            {
+              "id": "d5223df6-9e03-4057-8df4-84d1814d8f28",
+              "name": "chatInput",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.body.chatInput }}"
+            },
+            {
+              "id": "2c9ddb0e-d2cd-4a90-91c4-57010b479ffd",
+              "name": "entity_id",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.headers.entity_id }}"
+            },
+            {
+              "id": "932fa38c-a085-4136-8f1d-1338a022f26b",
+              "name": "msg_id",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.body.msg_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "57e8c65a-4174-420d-ac47-9afb3a200840",
+      "name": "Edit Fields22",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -8240,
+        -2080
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "combinator": "or",
+          "conditions": [
+            {
+              "id": "356b7a01-6752-4ec5-8a9e-f508cb591183",
+              "operator": {
+                "name": "filter.operator.equals",
+                "type": "string",
+                "operation": "equals"
+              },
+              "leftValue": "={{ $json.entity_id }}",
+              "rightValue": "undefined"
+            },
+            {
+              "id": "92c24006-1523-4695-942e-64de10768f9d",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              },
+              "leftValue": "={{ $json.entity_id }}",
+              "rightValue": "undefined"
+            },
+            {
+              "id": "136093f8-550d-4dce-9fb4-b5d533826412",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              },
+              "leftValue": "={{ $json.entity_id }}",
+              "rightValue": ""
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "0951fffe-4bf3-4f7f-975b-a186f9f19685",
+      "name": "If32",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        -7840,
+        -2060
+      ],
+      "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a52e92dd-2f20-41f1-9bde-9c19cf38c5c6",
+              "name": "sessionId",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.body.sessionId }}"
+            },
+            {
+              "id": "0bd0fe92-bf48-49ac-9e64-439aa5dc9b3f",
+              "name": "client_id",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.query.client_id }}"
+            },
+            {
+              "id": "d5223df6-9e03-4057-8df4-84d1814d8f28",
+              "name": "chatInput",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.body.chatInput }}"
+            },
+            {
+              "id": "2c9ddb0e-d2cd-4a90-91c4-57010b479ffd",
+              "name": "entity_id",
+              "type": "string",
+              "value": "=200"
+            },
+            {
+              "id": "2a7ca98a-d9ef-4dae-808f-be65c024671d",
+              "name": "msg_id",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.body.msg_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "25395c62-4fdd-4d1d-a9b5-3f5bc638b523",
+      "name": "Edit Fields23",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -7560,
+        -2180
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "content": "# Ticket Status\n ",
+        "height": 340,
+        "width": 460,
+        "color": 2
+      },
+      "id": "947318cd-647e-4214-97b9-81fd3e20a1b2",
+      "name": "Sticky Note10",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -7760,
+        -2240
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a customer service intent classifier. Classify the user query {{ $('Webhook').item.json.body.chatInput }} into exactly one category.\n\n**CRITICAL OUTPUT RULES**:\n\n* Output MUST be valid JSON ONLY - NO markdown code blocks, NO `json` tags, NO extra formatting\n* Output MUST be pure JSON starting with { and ending with }\n* DO NOT wrap output in code blocks or backticks\n* Example of CORRECT output: {\"intent\": \"bill_dispute\"}\n* Example of WRONG output: `json\\n{\"intent\": \"bill_dispute\"}\\n`\n\n---\n\n### CLASSIFICATION RULES:\n\n#### **1️⃣ BILL DISPUTE**\n\nIf the query mentions ANY of the following phrases or keywords, classify as **\"bill_dispute\"**:\n\n* \"i have high bill usage\"\n* \"i have billing issue\"\n* \"my bill is too high\"\n* \"i need to know bill usage\"\n* \"bill dispute\"\n* \"bill usage\"\n\n**Keywords:**\nbill | billing usage | bill related issues\n**Exclude:** \"sounds like bill summary\"\n\n---\n\n#### **2️⃣ BILL SUMMARY**\n\nIf the query mentions ANY of the following phrases or keywords, classify as **\"bill_summary\"**:\n\n* \"elaborate or يشرح\"\n* \"What is the total bill synopsis for this client?\"\n* \"Could you give me the customer's bill history summary?\"\n* \"Can you please elaborate more on this bill\"\n* \"Can you please give more details on this bill\"\n* \"Can you provide a summary of the customer's billing details?\"\n* \"Requesting a quick recap of the client's bill information.\"\n* \"elaborate\"\n* \"elaborate on this invoice\"\n* \"in detail explain\"\n* \"How many active connections are being billed this month?\"\n\n**Also include:**\nAny query that sounds like requesting to provide bill summary, wanting more details, or elaboration on a bill or elaborate on invoice or elaborate or more detailed way i need explaination or explain more on this bill.\n\n---\n\n#### **3️⃣ CONTRACT RENEWAL**\n\nIf the query includes ANY telecom-related contract management phrases, classify as **\"contract_renewal\"**:\n\n* \"i need to manage my contracts\"\n* \"contract management\"\n* \"how do i renew my contract\"\n* \"i need to purchase new contract\"\n* \"i need to extend contract\"\n\n---\n\n#### **4️⃣ BEST OFFER**\n\nIf the query includes ANY telecom-related issues like (facing network issue, DSL connection problem, DSL light blinking red, etc...) or offer-related words, classify as **\"best_offer\"**.\n\n**Trigger keywords include:**\nwhat is | how to | check | balance | last recharge | offers | plan type | account type | data remaining | sms remaining | current plan | details\n\n**Issue keywords:**\nfacing | connection | network | signal | call | internet | speed | drop | not working | poor | slow | broken | issue | problem | streaming | Wi-Fi | Auto-Debit | recharge | router | Transactions | SIM | Security | Hacking | Spam | Reactivation | SIM related issue | unblock service | SIM blocked | service blocked | broadband related issue | Router or Modem |  Switching from Broadband to Fiber | Temporary Suspension | Reactivation of Service | DSL Connection |  Fiber Optic issue | WiFi disconnection |  Slow broadband | network speed |  Streaming Services\n\n**Offer keywords:**\noffer | best plan | available plans | promotion | discount | scheme | special plan | new offer | current offers | upgrade options | plan benefits | sms revenue | data revenue | customer name | customer balance | call count | msisdn | phone number of customer | name of customer | current product | recommended product | broadband | calls not connecting | know my offer | telecom related issue | network issue\n\n---\n\n#### **5️⃣ CHANGE PLAN**\n\nIf the query mentions changing, switching, upgrading, or migrating plans, classify as **\"change_plan\"**.\n\n**Examples:**\n\n* \"I need to change the customer’s plan.\"\n* \"I’d like to change the plan for this customer.\"\n* \"Please change the customer’s plan.\"\n* \"Need to update customer’s plan details.\"\n* \"Customer wants to replace the current plan.\"\n* \"There is a plan change request from customer.\"\n\n**Keywords:**\nchange plan | switch to another plan | change my current plan | upgrade plan | move from current plan to another plan | plan switching | plan migration | migrate to another plan | move from current plan to a different one | modify plan\n\n---\n\n#### **6️⃣ ORDER STATUS**\n\nIf the query mentions checking, confirming, or troubleshooting the **status of a customer’s order**, classify as **\"order_status\"**.\n\n**Examples:**\n\n* \"Has the order been stuck at any stage?\"\n* \"Is there any issue with the customer’s order processing?\"\n* \"Can you check if the customer’s order is on hold?\"\n* \"Is the order still in progress or completed?\"\n* \"What’s the status of the customer’s order?\"\n* \"Can you tell me the current status of the customer's order?\"\n* \"Please get me the latest update on this customer’s order.\"\n* \"The customer says they haven’t received the order yet — can you confirm the status?\"\n* \"Looks like the customer's order is stuck — can you find out why?\"\n\n**Keywords:**\norder | status | update | progress | stage | processing | on hold | stuck | issue with order tracking | order delayed | order confirm | received | pending | completed | customer | tracking\n\n---\n#### **7️⃣ TICKET STATUS**\n\nIf the query mentions to view ticket details, ticket status, current ticket status, ticket summary or sounds like ticket status/summary/details classify as **\"ticket_status\"**.\n\n**Examples:**\n\n* \"I want to view ticket details of a customer.\"\n* \"I’d like to see customer ticket summary .\"\n* \"want to view customer's ticket details\"\n\n\n---\n\n\n\n\n#### **8️⃣ GENERAL**\n\nIf none of the above categories match, classify the query as **\"general\"**.\n\n---\n\n### EXAMPLES:\n\nI have high bill usage → {\"intent\": \"bill_dispute\"}\nMy bill is too high → {\"intent\": \"bill_dispute\"}\nCan you provide a summary of the customer's billing details? → {\"intent\": \"bill_summary\"}\nCan you please elaborate more on this bill → {\"intent\": \"bill_summary\"}\nI want to know customers balance → {\"intent\": \"best_offer\"}\nCustomer is facing call drop frequently → {\"intent\": \"best_offer\"}\nI want to know offer of a customer → {\"intent\": \"best_offer\"}\ncustomer SIM got blocked → {\"intent\": \"best_offer\"}\nSIM blocked → {\"intent\": \"best_offer\"}\nfacing DSL connection issue → {\"intent\": \"best_offer\"}\nDSL connection issue → {\"intent\": \"best_offer\"}\nI need to change the customer’s plan → {\"intent\": \"change_plan\"}\nDSL light blinking red → {\"intent\": \"best_offer\"}\nCustomer wants to switch to another plan → {\"intent\": \"change_plan\"}\nPlease change the customer’s plan → {\"intent\": \"change_plan\"}\nHas the order been stuck at any stage? → {\"intent\": \"order_status\"}\nWhat’s the status of the customer’s order? → {\"intent\": \"order_status\"}\nThe customer says they haven’t received the order yet — can you confirm the status? → {\"intent\": \"order_status\"}\nWant to know ticket details of a customer → {\"intent\": \"ticket_status\"}\nWant to view ticket details of a customer → {\"intent\": \"ticket_status\"}\nWant to know ticket status of a customer → {\"intent\": \"ticket_status\"}\nHow to change language? → {\"intent\": \"general\"}\nHow are you? → {\"intent\": \"general\"}\n\n**OUTPUT FORMAT - MUST FOLLOW EXACTLY**:\nOutput ONLY pure JSON in this exact format with NO markdown, NO backticks, NO code blocks:\n{\"intent\": \"classified_intent_here\"}\n\nDO NOT include any text before or after the JSON.\nDO NOT wrap the JSON in `json` tags.\nOutput the raw JSON object directly.\n",
+        "options": {}
+      },
+      "id": "536b87cf-8787-45c2-8b35-762c7cac4c62",
+      "name": "AI Agent18",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        -9280,
+        -4200
+      ],
+      "typeVersion": 1.9
+    },
+    {
+      "parameters": {
+        "content": "# latest",
+        "width": 460
+      },
+      "id": "fe14ca78-5c96-489d-af36-c1aac648a011",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -9360,
+        -4240
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "FOIFYnB6XADFJX7C",
+          "cachedResultName": "Bill Summary OBC"
+        },
+        "workflowInputs": {
+          "value": {},
+          "schema": [],
+          "mappingMode": "defineBelow",
+          "matchingColumns": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "id": "a023ba43-d33b-489e-b9b3-5f4151d52534",
+      "name": "Execute Workflow7",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "position": [
+        -6080,
+        -2760
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a52e92dd-2f20-41f1-9bde-9c19cf38c5c6",
+              "name": "sessionId",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.body.sessionId }}"
+            },
+            {
+              "id": "0bd0fe92-bf48-49ac-9e64-439aa5dc9b3f",
+              "name": "client_id",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.query.client_id }}"
+            },
+            {
+              "id": "d5223df6-9e03-4057-8df4-84d1814d8f28",
+              "name": "chatInput",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.body.chatInput }}"
+            },
+            {
+              "id": "2c9ddb0e-d2cd-4a90-91c4-57010b479ffd",
+              "name": "entity_id",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.headers.entity_id }}"
+            },
+            {
+              "id": "932fa38c-a085-4136-8f1d-1338a022f26b",
+              "name": "msg_id",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.body.msg_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "da458eff-fb4e-4598-9ad3-2277d7cf3ae7",
+      "name": "Edit Fields30",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -6800,
+        -2780
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a52e92dd-2f20-41f1-9bde-9c19cf38c5c6",
+              "name": "sessionId",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.body.sessionId }}"
+            },
+            {
+              "id": "0bd0fe92-bf48-49ac-9e64-439aa5dc9b3f",
+              "name": "client_id",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.query.client_id }}"
+            },
+            {
+              "id": "d5223df6-9e03-4057-8df4-84d1814d8f28",
+              "name": "chatInput",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.body.chatInput }}"
+            },
+            {
+              "id": "2c9ddb0e-d2cd-4a90-91c4-57010b479ffd",
+              "name": "entity_id",
+              "type": "string",
+              "value": "=200"
+            },
+            {
+              "id": "2a7ca98a-d9ef-4dae-808f-be65c024671d",
+              "name": "msg_id",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.body.msg_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "22121474-0252-4216-8830-a86df1d939d6",
+      "name": "Edit Fields31",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -6320,
+        -2900
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "content": "# Bill summary\n ",
+        "height": 340,
+        "width": 460,
+        "color": 2
+      },
+      "id": "0d48d162-ebef-4455-b87e-c6796fba74a6",
+      "name": "Sticky Note11",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -6140,
+        -2900
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "operation": "set",
+        "key": "=user:{{ $('Webhook').item.json.body.sessionId }}:output",
+        "value": "={{ $json.message.output }}"
+      },
+      "id": "581a31d6-639a-4cad-ba81-37a938c3a97b",
+      "name": "Redis31",
+      "type": "n8n-nodes-base.redis",
+      "position": [
+        -5880,
+        -2760
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "redis": {
+          "id": "YCWins8Rwtl5S66K",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "combinator": "or",
+          "conditions": [
+            {
+              "id": "356b7a01-6752-4ec5-8a9e-f508cb591183",
+              "operator": {
+                "name": "filter.operator.equals",
+                "type": "string",
+                "operation": "equals"
+              },
+              "leftValue": "={{ $json.entity_id }}",
+              "rightValue": "undefined"
+            },
+            {
+              "id": "92c24006-1523-4695-942e-64de10768f9d",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              },
+              "leftValue": "={{ $json.entity_id }}",
+              "rightValue": "undefined"
+            },
+            {
+              "id": "136093f8-550d-4dce-9fb4-b5d533826412",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              },
+              "leftValue": "={{ $json.entity_id }}",
+              "rightValue": ""
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "7db9410b-f7a7-4f5d-9e48-8d76a3b27971",
+      "name": "If35",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        -6600,
+        -2780
+      ],
+      "typeVersion": 2.2
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "If": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Execute Workflow2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields12",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Execute Workflow3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If4": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields14",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Execute Workflow4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Redis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If32": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields23",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Execute Workflow5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If35": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields31",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Execute Workflow7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code3": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis": {
+      "main": [
+        [
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis3": {
+      "main": [
+        [
+          {
+            "node": "Redis1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields30",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields11",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields13",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields22",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch1": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields30",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields11",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields13",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields22",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Redis3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Execute Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Code3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Execute Workflow1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields4": {
+      "main": [
+        [
+          {
+            "node": "Execute Workflow2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields11": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields12": {
+      "main": [
+        [
+          {
+            "node": "Execute Workflow3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields13": {
+      "main": [
+        [
+          {
+            "node": "If4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields14": {
+      "main": [
+        [
+          {
+            "node": "Execute Workflow4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields22": {
+      "main": [
+        [
+          {
+            "node": "If32",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields23": {
+      "main": [
+        [
+          {
+            "node": "Execute Workflow5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields30": {
+      "main": [
+        [
+          {
+            "node": "If35",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields31": {
+      "main": [
+        [
+          {
+            "node": "Execute Workflow7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Workflow": {
+      "main": [
+        [
+          {
+            "node": "Redis4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model1": {
+      "ai_languageModel": [
+        []
+      ]
+    },
+    "Groq Chat Model2": {
+      "ai_languageModel": [
+        []
+      ]
+    },
+    "Execute Workflow1": {
+      "main": [
+        [
+          {
+            "node": "Redis6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Workflow2": {
+      "main": [
+        [
+          {
+            "node": "Redis5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Workflow3": {
+      "main": [
+        [
+          {
+            "node": "Redis11",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Workflow4": {
+      "main": [
+        [
+          {
+            "node": "Redis12",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Workflow5": {
+      "main": [
+        [
+          {
+            "node": "Redis28",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Workflow7": {
+      "main": [
+        [
+          {
+            "node": "Redis31",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent4",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis Chat Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis Chat Memory4": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent4",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "5f982d37-4974-4949-8b58-cccf2c72e92c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b25f22a58958347dd7fc155d48224af9169c7fbab0fd1f4d09ecc9608e71425b"
+  },
+  "id": "EBZMzuFAqJycRRQF",
+  "tags": [
+    {
+      "createdAt": "2025-06-18T08:19:59.251Z",
+      "updatedAt": "2025-06-18T08:19:59.251Z",
+      "id": "biBTxrnhBtjtHhpn",
+      "name": "Anushri"
+    }
+  ]
+}
