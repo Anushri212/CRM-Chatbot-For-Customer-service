@@ -1,316 +1,384 @@
-# 📡 AI-Powered Telecom CRM Automation (n8n + LLM)
+# 📡 AI-Powered Telecom CRM Automation Platform
+### n8n + LLM + Redis Memory + WebSocket Event Streaming
 
-An intelligent **Telecom CRM Automation System** built using **n8n workflows, LLM agents, Redis memory, and JSON extraction logic**.
+This project implements an **AI-driven Telecom CRM automation system** that intelligently routes customer queries to specialized workflows such as billing disputes, SIM issues, contract renewal, plan migration, and bill analysis.
 
-This system classifies user intent and dynamically routes requests to specialized subflows including:
-
-* SIM related issues & troubleshooting
-* Best offer recommendation
-* Bill dispute management
-* Bill summary & comparison (Multi-language)
-* Contract renewal & extension
-* Plan change / migration
-* Order status tracking
-* Ticket creation & ticket status
+The system is designed for **production-grade conversational automation** with strict JSON responses, session memory, workflow orchestration, and resilient API handling.
 
 ---
 
-# 🏗️ Architecture Overview
+# 🏗️ System Architecture
 
-```
-User Input
-    ↓
-Main Intent Classifier
-    ↓
-Intent-based Routing
-    ↓
-Specialized Sub-Workflow
-    ↓
-CRM / Data Fetch / RAG / Ticket Creation
-    ↓
-Structured JSON Output
-```
+User → WebSocket Gateway → Intent Classifier → Workflow Router → Domain Subflows → CRM APIs / Data Sources → Structured Response
 
-The solution uses:
+Core design principles:
 
-* 🔹 Intent Classification Layer
-* 🔹 JSON Extraction Agents
-* 🔹 Telecom Validation Rules
-* 🔹 Session Memory (Redis + Window Memory)
-* 🔹 Multi-language Support
-* 🔹 Strict Output Control (Production-Safe JSON)
+• Deterministic JSON outputs  
+• Conversation memory persistence  
+• Strict validation rules  
+• Multi-step conversational flows  
+• Event-based responses via WebSocket  
 
 ---
 
-# 🧠 1️⃣ Main Intent Classifier
+# 🧠 Intelligent Intent Routing Layer
 
-📂 File: `crm_bill_contract_bestoffer_planChange_orderStatus.json` 
+The entry workflow acts as a **central intent classifier**.
 
-This is the **entry point workflow**.
+User queries are classified into:
 
-It classifies user input into one of the following intents:
+- bill_dispute
+- bill_summary
+- contract_renewal
+- best_offer
+- change_plan
+- order_status
+- ticket_status
+- general
 
-* `bill_dispute`
-* `bill_summary`
-* `contract_renewal`
-* `best_offer`
-* `change_plan`
-* `order_status`
-* `ticket_status`
-* `general`
+### Key Characteristics
 
-### 🔐 Strict Rules
+✔ Strict JSON-only responses  
+✔ No markdown / formatting noise  
+✔ Deterministic intent classification  
+✔ Clear separation between billing dispute and bill summary  
 
-* Returns pure JSON only
-* No markdown blocks
-* Single intent classification
-* Strict separation between bill dispute vs bill summary
-
----
-
-# 📶 2️⃣ SIM Related Issues + Offer + RAG + Ticket Flow
-
-📂 File: `CRM_SIM_related_issues_development_V1_2.json` 
-
-Handles:
-
-* SIM blocked
-* DSL issues
-* Network problems
-* Broadband issues
-* Offer inquiries
-* Troubleshooting steps (step-by-step)
-* Auto ticket creation if unresolved
-
-### 🔎 Key Features
-
-✅ Mandatory 8–15 digit phone number validation
-✅ Memory of previous phone number
-✅ Strict JSON output with:
-
-```json
-{
-  "input": "exact_user_message",
-  "phone_number": "extracted_number"
-}
-```
-
-✅ DSL Special Handling:
-
-* If resolved → End flow
-* If not resolved → Continue next troubleshooting step
-* If still unresolved → Create support ticket
+This layer ensures **clean orchestration of downstream workflows**.
 
 ---
 
-# 💰 3️⃣ Bill Dispute Flow
+# 🧠 Conversation Memory Management
 
-📂 File: `bill_dispute_crm_namratha.json` 
+Memory is critical for telecom conversations where user information is collected across multiple turns.
 
-Handles:
+The system uses **two types of memory layers**.
 
-* High bill complaints
-* Overcharge issues
-* Billing disputes
-* Dispute ticket creation
+## 1️⃣ Redis Session Memory
 
-### 🔄 Conversation Intelligence
+Used for:
+
+• storing session conversations  
+• storing extracted IDs  
+• storing selected language  
+• maintaining conversation continuity  
+
+Example keys:
+
+user:{sessionId}:output
+
+Redis allows:
+
+✔ horizontal scaling  
+✔ persistent conversation tracking  
+✔ multi-channel session continuation  
+
+---
+
+## 2️⃣ Window Buffer Memory
+
+Implemented using **LangChain memory buffer window**.
 
 Tracks:
 
-* Account ID (6D format)
-* Service ID (8–14 digits)
-* Selected billing option
-* Dispute amount
+• previous conversation messages  
+• previously collected parameters  
+• user selected options  
 
-### 📦 Output Format
+Benefits:
 
-```json
+• avoids asking same ID repeatedly  
+• allows context-aware responses  
+• supports multi-step workflows  
+
+Example stored variables:
+
+- AccountId
+- ServiceId
+- phone_number
+- selected_option
+- language
+
+---
+
+# 🌐 WebSocket Event Streaming
+
+The system sends responses to the client through **WebSocket events** instead of simple HTTP replies.
+
+Example event structure:
+
 {
-  "account_id": "6DXXXX",
-  "service_id": "XXXXXXXX",
-  "ai_message": "response message",
-  "option": "selected option",
-  "level": "service_level | account_level | ticket_level"
+"type": "data_response",
+"param0": "employee_records"
 }
-```
+
+Additional payload types:
+
+• table_data  
+• dropdown_content  
+• text_message  
+
+### Advantages
+
+✔ Real-time chat response  
+✔ structured UI rendering  
+✔ dynamic UI components  
+
+For example:
+
+- tables for bill data  
+- dropdowns for plan selection  
+- structured responses for CRM data
 
 ---
 
-# 📄 4️⃣ Bill Summary & Comparison (Multi-Language)
+# 🔁 Workflow Orchestration
 
-📂 File: `Bill_Summary_OBC.json` 
+Each telecom use case is implemented as a **dedicated n8n workflow**.
 
-Supports:
+Main workflows include:
 
-* Invoice summary
-* Bill comparison
-* Month-to-month variation
-* Due amount & payment history
-* VAT breakdown
-* Active connections summary
-* Itemized bill
-
-### 🌍 Multi-language Support
-
-* English
-* Arabic
-
-Language detection handled via:
-
-* Conversation memory
-* Language selection prompt
-* Redis chat memory
-
-### 🧠 Advanced Capabilities
-
-* Month comparison logic
-* Bill difference explanation
-* Language-based response switching
-* Session-based storage
-
----
-
-# 🔄 5️⃣ Contract Renewal & Extension
-
-📂 File: `contract_renewal_integration_with_crm_somia.json` 
+### SIM Issue & Offer Support
 
 Handles:
 
-* Auto renewal
-* Extend contract
-* Purchase new contract
-* SA-based contract selection (12Months_SA, 24Months_SA, 36Months_SA)
+• SIM blocked  
+• DSL issues  
+• network connectivity issues  
+• broadband problems  
+• plan offers  
 
-### 🔐 Validation Rules
+Includes **step-by-step troubleshooting flows**.
 
-* Service ID: 8–14 digits
-* Account ID: Must start with `6D`
+If issue remains unresolved:
 
-### 🗓️ Extension Handling
-
-* 1 week → 7 days
-* 1 month → 30 days
-* 1 year → 365 days
-* OR exact date if provided
-
-Structured output format:
-
-```
-cust_service: X | cust_AccountId: Y | type:Extend the contract | extension_day: Z
-```
+→ system creates support ticket automatically.
 
 ---
 
-# 🔁 6️⃣ Change Plan Workflow
-
-📂 File: `CRM_change_plan.json` 
+### Billing Dispute Workflow
 
 Handles:
 
-* Plan upgrade
-* Plan migration
-* Switching plans
-* Customer-requested plan changes
+• high bill complaints  
+• overcharge issues  
+• billing disputes  
 
-### 🚨 Strict JSON Extraction Mode
+Conversation flow:
 
-* Requires valid 8–15 digit phone number
-* No intent field allowed
-* No extra fields allowed
-* Pure JSON only
+1️⃣ identify billing issue  
+2️⃣ collect Account ID  
+3️⃣ collect Service ID  
+4️⃣ collect dispute amount  
+5️⃣ create ticket  
+
+Conversation memory ensures **IDs are not requested repeatedly**.
 
 ---
 
-# 📦 7️⃣ Order Status & Ticket Status
-
-Handled via main intent classifier routing.
+### Bill Summary & Comparison
 
 Supports:
 
-* Order stuck checks
-* Order tracking
-* Ticket status
-* Ticket summary
-* Ticket detail retrieval
+• invoice summary  
+• bill comparison  
+• VAT breakdown  
+• due date detection  
+• month-to-month variation  
+
+Also supports **bill comparison logic across months**.
 
 ---
 
-# 🧠 Memory Architecture
+### Contract Renewal Automation
 
-System uses:
+Handles:
 
-* Redis Chat Memory
-* Window Buffer Memory
-* Session-based tracking
-* LATEST_NUMBER storage
-* Conversation context retention
+• auto renewal  
+• contract extension  
+• purchase new contracts  
 
-Ensures:
+Supported contract packages:
 
-* No repeated ID requests
-* No revalidation of valid IDs
-* Clean multi-step conversational flows
+- 12Months_SA
+- 24Months_SA
+- 36Months_SA
 
----
+Duration conversion logic:
 
-# 🔐 Production Safety Controls
-
-✔ Strict JSON-only responses
-✔ No markdown JSON blocks
-✔ No placeholder values
-✔ No empty phone numbers
-✔ No intent leakage in subflows
-✔ Strict validation enforcement
-✔ DSL resolution control logic
+1 week → 7 days  
+1 month → 30 days  
+1 year → 365 days  
 
 ---
 
-# 🛠 Tech Stack
+### Plan Change Workflow
 
-* n8n
-* OpenAI (gpt-4o-mini)
-* Redis
-* JSON extraction agents
-* CRM API integrations
-* RAG-based troubleshooting logic
+Handles:
 
----
+• plan upgrade  
+• plan migration  
+• switching telecom plans  
 
-# 🚀 Key Capabilities
+Strict phone number validation:
 
-| Feature                     | Supported |
-| --------------------------- | --------- |
-| Intent Classification       | ✅         |
-| Telecom Issue Handling      | ✅         |
-| Automated Troubleshooting   | ✅         |
-| Auto Ticket Creation        | ✅         |
-| Bill Comparison             | ✅         |
-| Multi-Language Support      | ✅         |
-| Contract Renewal Automation | ✅         |
-| Plan Migration              | ✅         |
-| Order Tracking              | ✅         |
-| Strict JSON Production Mode | ✅         |
+Valid range:
+
+8–15 digits
+
+JSON output is created **only when number is present**.
 
 ---
 
-# 📌 Why This Project is Strong
+# 🔐 Strict JSON Extraction Engine
 
-* Fully modular architecture
-* Strict production-grade JSON control
-* Telecom domain-optimized prompts
-* Conversation memory awareness
-* Multi-language intelligent switching
-* End-to-end automation
+All LLM outputs follow **strict deterministic JSON rules**.
+
+Example output:
+
+{
+"input": "SIM blocked",
+"phone_number": "96834561234"
+}
+
+Rules enforced:
+
+✔ No markdown blocks  
+✔ No additional keys  
+✔ No empty values  
+✔ No placeholder numbers  
+
+This ensures **safe integration with downstream APIs**.
 
 ---
 
-# 📎 Future Enhancements
+# 🔄 API Integration & Failure Handling
 
-* Analytics dashboard
-* SLA tracking
-* Voice bot integration
-* WhatsApp / IVR integration
-* Model fine-tuning for telecom intents
+CRM APIs are invoked for:
+
+• billing data  
+• service status  
+• account information  
+• contract data  
+• plan details  
+
+## Failure Handling Strategy
+
+If API call fails:
+
+1️⃣ retry mechanism triggered  
+2️⃣ workflow logs error state  
+3️⃣ fallback message generated  
+
+Example fallback:
+
+"We are currently unable to retrieve your data. Please try again shortly."
+
+If failure persists:
+
+→ support ticket suggestion.
 
 ---
+
+# 🔔 Follow-up Notification Handling
+
+When an issue cannot be resolved automatically:
+
+The system triggers:
+
+✔ ticket creation workflow  
+✔ follow-up notification  
+
+Possible follow-ups include:
+
+• ticket confirmation message  
+• escalation notification  
+• agent follow-up ticket  
+
+Example:
+
+create support ticket for DSL issue
+
+Follow-up events can be sent via:
+
+• CRM notification  
+• WebSocket push event  
+• ticket tracking response
+
+---
+
+# 🌍 Multi-Language Support
+
+Currently supported languages:
+
+- English
+- Arabic
+
+Language detection logic:
+
+1️⃣ ask user preferred language  
+2️⃣ store language in memory  
+3️⃣ route response through language branch  
+
+Responses automatically switch language based on stored preference.
+
+---
+
+# 🛠 Technology Stack
+
+Core orchestration
+
+• n8n
+
+AI layer
+
+• OpenAI GPT models
+
+Memory layer
+
+• Redis
+• LangChain Memory Buffer
+
+Integration layer
+
+• CRM APIs
+• WebSocket gateway
+
+---
+
+# 🚀 Key System Capabilities
+
+• AI intent classification  
+• telecom troubleshooting automation  
+• bill analysis and comparison  
+• ticket automation  
+• contract lifecycle automation  
+• plan recommendation & switching  
+• real-time WebSocket responses  
+• persistent conversation memory  
+
+---
+
+# 📈 Why This System Is Production Ready
+
+✔ deterministic JSON outputs  
+✔ scalable Redis memory  
+✔ real-time WebSocket delivery  
+✔ strict validation rules  
+✔ workflow modularity  
+✔ resilient API integration  
+
+---
+
+# 📌 Future Enhancements
+
+Potential improvements:
+
+• WhatsApp bot integration  
+• Voice bot / IVR integration  
+• Telecom analytics dashboard  
+• proactive churn alerts  
+• predictive issue detection  
+
+---
+
+© Telecom AI CRM Automation Platform
